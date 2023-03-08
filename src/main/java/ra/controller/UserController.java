@@ -20,6 +20,7 @@ import ra.payload.response.JwtResponse;
 import ra.payload.response.MessageResponse;
 import ra.security.CustomUserDetail;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -94,7 +95,7 @@ public class UserController {
     @PostMapping("/signin")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUserName(),loginRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(loginRequest.getUserName(),loginRequest.getPasswords())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         CustomUserDetail customUserDetail = (CustomUserDetail) authentication.getPrincipal();
@@ -105,5 +106,14 @@ public class UserController {
                 .map(item->item.getAuthority()).collect(Collectors.toList());
         return ResponseEntity.ok(new JwtResponse(jwt,customUserDetail.getUsername(),customUserDetail.getEmail(),
                 customUserDetail.getPhone(),listRoles));
+    }
+    @GetMapping("/logOut")
+    public ResponseEntity<?> logOut(HttpServletRequest request){
+        String authorizationHeader = request.getHeader("Authorization");
+
+        // Clear the authentication from server-side (in this case, Spring Security)
+        SecurityContextHolder.clearContext();
+
+        return ResponseEntity.ok("You have been logged out.");
     }
 }
