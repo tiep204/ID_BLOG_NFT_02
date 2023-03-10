@@ -142,20 +142,19 @@ public class UserController {
         }
     }
 
+    @GetMapping("/getAllUser")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    public List<Users> getAllUser(){
+        return userService.findAll();
+    }
 
-
-
-//    @GetMapping("/getAllUser")
-//    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-//    public List<Users> getAllUser(){
-//        return userService.findAll();
-//    }
-//
 //    @GetMapping("/{userId}")
 //    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
 //    public Users getUserById(@PathVariable("userId") int userId){
 //        return userService.findByUserId(userId);
 //    }
+//
+
 
 
 }
