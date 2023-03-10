@@ -1,10 +1,13 @@
 package ra.model.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ra.model.entity.Users;
 
 import java.util.List;
 
 public interface UserService {
+    List<Users> sortByStudentName(String direction);
     List<Users> findByUserName(String userName);
     List<Users> searchUserName(String userName);
 
@@ -19,4 +22,9 @@ public interface UserService {
     Users findByUserId(int users);
 
     List<Users> findAll();
+    Page<Users> pagging(Pageable pageable);
+    Users updateStatus(Users users);
+
+    List<Users> listFilter(Integer option);
+
 }
