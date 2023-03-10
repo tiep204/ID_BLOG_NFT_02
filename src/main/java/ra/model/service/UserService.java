@@ -5,7 +5,8 @@ import ra.model.entity.Users;
 import java.util.List;
 
 public interface UserService {
-    Users findByUserName(String userName);
+    List<Users> findByUserName(String userName);
+    List<Users> searchUserName(String userName);
 
     Users findByEmail(String email);
 

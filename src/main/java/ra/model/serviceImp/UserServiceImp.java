@@ -14,9 +14,15 @@ public class UserServiceImp implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+
     @Override
-    public Users findByUserName(String userName) {
-        return userRepository.findByUserName(userName);
+    public List<Users> findByUserName(String userName) {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public List<Users> searchUserName(String userName) {
+        return userRepository.findByUserNameContaining(userName);
     }
 
     @Override

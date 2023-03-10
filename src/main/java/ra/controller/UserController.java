@@ -22,7 +22,9 @@ import ra.model.service.UserService;
 import ra.payload.request.ChangePassword;
 import ra.payload.request.LoginRequest;
 import ra.payload.request.SignupRequest;
+import ra.payload.request.UpdaUserQuyen;
 import ra.payload.response.JwtResponse;
+import ra.payload.response.ListUserResponse;
 import ra.payload.response.MessageResponse;
 import ra.security.CustomUserDetail;
 
@@ -142,19 +144,69 @@ public class UserController {
         }
     }
 
-    @GetMapping("/getAllUser")
-    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    public List<Users> getAllUser(){
-        return userService.findAll();
-    }
-
 //    @GetMapping("/{userId}")
 //    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
 //    public Users getUserById(@PathVariable("userId") int userId){
 //        return userService.findByUserId(userId);
 //    }
+
+
+
+//    @GetMapping("/getAllUser")
+//    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
 //
+//    public List<ListUserResponse> getAllProduct() {
+//        List<ListUserResponse> listUserResponses = new ArrayList<>();
+//        List<Users> listUser = userService.findAll();
+//        for (Users use : listUser) {
+//            ListUserResponse users = new ListUserResponse();
+//            users.setUserId(use.getUserId());
+//            users.setUserName(use.getUserName());
+//            users.setCreated(use.getCreated());
+//            users.setEmail(use.getEmail());
+//            users.setUserAvatar(use.getUserAvatar());
+//            users.setPhone(use.getPhone());
+//            users.setUserStatus(use.isUserStatus());
+//            listUserResponses.add(users);
+//        }
+//        return listUserResponses;
+//    }
+
+//    @GetMapping("/searchUser")
+//    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+//    public List<Users> searchUsersss(@RequestParam("userName") String userName){
+//        return userService.searchUserName(userName);
+//    }
 
 
+    @PostMapping("/phanquyen/{userId}")
+    public Users updateUser(@PathVariable("userId") int userId, @RequestBody UpdaUserQuyen updaUserQuyen){
+        Users user = userService.findByUserId(userId);
+        Set<String> strRoles = updaUserQuyen.getListRoles();
+        Set<Roles> listRoles = new HashSet<>();
+        if(strRoles == null){
+            Roles userRole = roleService.findByRoleName(ERole.ROLE_USER).orElseThrow(() -> new RuntimeException("Error: Role is not found"));
+            listRoles.add(userRole);
+        }else {
+            strRoles.forEach(role -> {
+                switch (role) {
+                    case "admin":
+                        Roles adminRole = roleService.findByRoleName(ERole.ROLE_ADMIN)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found"));
+                        listRoles.add(adminRole);
+                    case "moderator":
+                        Roles modRole = roleService.findByRoleName(ERole.ROLE_MODERATOR)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found"));
+                        listRoles.add(modRole);
+                    case "user":
+                        Roles userRole = roleService.findByRoleName(ERole.ROLE_USER)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found"));
+                        listRoles.add(userRole);
+                }
+            });
+        }
+        user.setListRoles(listRoles);
+        return userService.saveOrUpdate(user);
+    }
 
 }
