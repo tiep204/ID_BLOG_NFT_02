@@ -15,6 +15,6 @@ public interface BlogService {
     void delete(int blogID);
 
     List<Blog> searchByTitle(String blogTitle);
-    List<Blog> sortByCreatedDate(String direction);
+    List<Blog> sortByDateBlog(String direction);
     List<Blog> findByUserID(int userID);
 }

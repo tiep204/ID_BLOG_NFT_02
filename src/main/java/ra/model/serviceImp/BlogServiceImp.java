@@ -1,6 +1,7 @@
 package ra.model.serviceImp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ra.model.entity.Blog;
 import ra.model.repository.BlogRepository;
@@ -35,13 +36,19 @@ public class BlogServiceImp implements BlogService {
 
     @Override
     public List<Blog> searchByTitle(String blogTitle) {
-        return null;
+        return blogRepository.findByBlogTitleContaining(blogTitle);
     }
 
     @Override
-    public List<Blog> sortByCreatedDate(String direction) {
-        return null;
+    public List<Blog> sortByDateBlog(String direction) {
+        if(direction.equals("asc")){
+            return blogRepository.findAll(Sort.by("blogCreateDate").ascending());
+        }else {
+            return blogRepository.findAll(Sort.by("blogCreateDate").descending());
+        }
     }
+
+
 
     @Override
     public List<Blog> findByUserID(int userID) {
