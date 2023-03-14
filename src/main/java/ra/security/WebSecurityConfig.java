@@ -55,6 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/passReset/**").permitAll()
                 .antMatchers("/api/v1/comment/**").permitAll()
                 .antMatchers("/api/v1/blog/**").permitAll()
+                .antMatchers("/api/v1/likes/**").permitAll()
 
                 .anyRequest().authenticated(); // Tất cả các request khác đều cần phải xác thực mới được truy cập
 

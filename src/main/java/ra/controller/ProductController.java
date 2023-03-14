@@ -146,7 +146,6 @@ public ResponseEntity<?> deleteproduct(@PathVariable("producId") int productId) 
     }catch (Exception e){
         return ResponseEntity.ok("Chưa xóa được kiểm tra lại ");
     }
-
 }
 
     ////////////////////////////start deleteproduct////////////////////////////////////////
