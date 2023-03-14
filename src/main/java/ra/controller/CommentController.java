@@ -59,7 +59,7 @@ public class CommentController {
     //start getAllComment/////////
     @GetMapping("/getAllComment")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public List<Comment> getAllConten() {
+    public List<Comment> getAllConmen() {
         return commentService.findAll();
     }
     ///end getAllComment////

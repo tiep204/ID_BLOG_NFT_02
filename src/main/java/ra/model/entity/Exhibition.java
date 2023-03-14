@@ -32,9 +32,9 @@ public class Exhibition {
 
     @Column(name = "exhibitionStatus")
     private boolean exhibitionStatus;
-    @ManyToOne
+    @OneToMany
     @JoinColumn(name = "Product")
-    private Product product;
+    private List<Product> productList;
 
     @ManyToMany
     @JoinTable(name= "Exhibition_Tag", joinColumns = @JoinColumn(name = "exhibitionID"), inverseJoinColumns = @JoinColumn(name="tagID"))

@@ -35,7 +35,7 @@ public class ProductController {
 
     /////////////////////////////Start GetAllProduct///////////////////////////////////////
     @GetMapping("/getAllProduct")
-    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public List<ProductResponse> getAllProduct() {
         List<ProductResponse> listProductResponse = new ArrayList<>();
         List<Product> listProduct = productService.findAll();
