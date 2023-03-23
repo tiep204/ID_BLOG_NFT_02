@@ -10,4 +10,5 @@ public interface LikesService {
     void delete(int likesID);
     Likes findByID(int likeID);
     List<Likes> findAll();
+    List<Likes> findByUser_UserID(int userID);
 }

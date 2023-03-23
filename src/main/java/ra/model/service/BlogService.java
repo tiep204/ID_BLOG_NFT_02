@@ -1,6 +1,9 @@
 package ra.model.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ra.model.entity.Blog;
+import ra.model.entity.User;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,5 +19,8 @@ public interface BlogService {
 
     List<Blog> searchByTitle(String blogTitle);
     List<Blog> sortByDateBlog(String direction);
-    List<Blog> findByUserID(int userID);
+
+
+    Page<Blog> searchTitleAndSort(String blogTitle,Pageable pageable);
+
 }

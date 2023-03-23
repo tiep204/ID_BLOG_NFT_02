@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import ra.model.entity.Blog;
 import ra.model.entity.Exhibition;
 import ra.model.entity.Product;
 import ra.model.entity.User;
@@ -80,15 +82,15 @@ public class ProductController {
 
 ///////////////////////////////////////start create product///////////////////////////////////
     @PostMapping("/createProduct")
-    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> saveProduct(@RequestBody ProductRequet product) {
         try {
             CustomUserDetail userDetails = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User users = userService.findByUserId(userDetails.getUserId());
-            Exhibition exhibition = exhibitionService.findById(product.getExhibition());
+//            Exhibition exhibition = exhibitionService.findById(product.getExhibition());
             Product proNew = new Product();
             proNew.setUsers(users);
-            proNew.setExhibition(exhibition);
+//            proNew.setExhibition(exhibition);
             proNew.setProductName(product.getProductName());
             proNew.setProductAuthor(product.getProductAuthor());
             proNew.setProductPrice(product.getProductPrice());
@@ -115,10 +117,10 @@ public class ProductController {
         try {
             CustomUserDetail userDetails = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User users = userService.findByUserId(userDetails.getUserId());
-            Exhibition exhibition = exhibitionService.findById(product.getExhibition());
+//            Exhibition exhibition = exhibitionService.findById(product.getExhibition());
             Product proUpdate = productService.findById(productId);
             proUpdate.setUsers(users);
-            proUpdate.setExhibition(exhibition);
+//            proUpdate.setExhibition(exhibition);
             proUpdate.setProductName(product.getProductName());
             proUpdate.setProductAuthor(product.getProductAuthor());
             proUpdate.setProductPrice(product.getProductPrice());
@@ -190,6 +192,31 @@ public ResponseEntity<?> deleteproduct(@PathVariable("producId") int productId) 
 
     /////////////////end phantrang//////////////////////////
 
+///search phân trang sort///
+
+    @GetMapping("/searchProductNameBySort")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<Map<String,Object>> searchProductNameBySort(
+            @RequestParam String productName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam String direction
+    ){
+        Sort.Order order;
+        if (direction.equals("asc")) {
+            order = new Sort.Order(Sort.Direction.ASC, "productName");
+        } else {
+            order = new Sort.Order(Sort.Direction.DESC, "productName");
+        }
+        Pageable pageable = PageRequest.of(page, 2, Sort.by(order));
+        Page<Product> pageBlog = productService.searchProductNameAndSort(productName,pageable);
+        Map<String, Object> data = new HashMap<>();
+        data.put("product", pageBlog.getContent());
+        data.put("total", pageBlog.getSize());
+        data.put("totalItems", pageBlog.getTotalElements());
+        data.put("totalPages", pageBlog.getTotalPages());
+        return new ResponseEntity<>(data, HttpStatus.OK);
+
+    }
 
 
 

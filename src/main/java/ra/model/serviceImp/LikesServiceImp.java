@@ -34,4 +34,9 @@ public class LikesServiceImp implements LikesService {
     public List<Likes> findAll() {
         return likesRespository.findAll();
     }
+
+    @Override
+    public List<Likes> findByUser_UserID(int userID) {
+        return likesRespository.findByUser_UserID(userID);
+    }
 }

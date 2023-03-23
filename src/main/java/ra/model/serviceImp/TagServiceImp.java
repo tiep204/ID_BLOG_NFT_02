@@ -28,8 +28,9 @@ public class TagServiceImp implements TagService {
     }
 
     @Override
-    public void delete(int tagID) {
+    public Tag delete(int tagID) {
     tagRespository.deleteById(tagID);
+        return null;
     }
 
     @Override

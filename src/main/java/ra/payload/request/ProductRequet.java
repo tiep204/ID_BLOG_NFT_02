@@ -13,5 +13,5 @@ public class ProductRequet {
     private String productImage;
     private String productDecription;
     private Date productCreateDate;
-    private int exhibition;
+//    private int exhibition;
 }

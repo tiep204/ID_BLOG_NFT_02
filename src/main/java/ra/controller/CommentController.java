@@ -16,7 +16,6 @@ import ra.payload.request.CommentCreateRequest;
 import ra.security.CustomUserDetail;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @CrossOrigin(origins = "*")

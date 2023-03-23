@@ -58,4 +58,9 @@ public class ProductServiceImp implements ProductService {
     public Page<Product> pagging(Pageable pageable) {
         return productRespository.findAll(pageable);
     }
+
+    @Override
+    public Page<Product> searchProductNameAndSort(String productName, Pageable pageable) {
+        return productRespository.findByProductNameContaining(productName,pageable);
+    }
 }

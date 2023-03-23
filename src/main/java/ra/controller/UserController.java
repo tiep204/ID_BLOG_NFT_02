@@ -1,5 +1,6 @@
 package ra.controller;
 
+import com.sun.xml.bind.v2.runtime.reflect.ListTransducedAccessorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -105,17 +106,22 @@ public class UserController {
         //Lay cac quyen cua user
         List<String> listRoles = customUserDetail.getAuthorities().stream()
                 .map(item->item.getAuthority()).collect(Collectors.toList());
-        return ResponseEntity.ok(new JwtResponse(jwt,customUserDetail.getUsername(),customUserDetail.getEmail()
-                ,listRoles));
+
+        if (customUserDetail.isUserStatus()){
+            return ResponseEntity.ok(new JwtResponse(jwt,customUserDetail.getUsername(),customUserDetail.getEmail()
+                    ,listRoles));
+        }else {
+            return ResponseEntity.ok("Tai khoan nay da bi block");
+        }
     }
-    @GetMapping("/logOut")
+    @DeleteMapping("/logOut")
     public ResponseEntity<?> logOut(HttpServletRequest request){
-        String authorizationHeader = request.getHeader("Authorization");
+        request.getHeader("Authorization");
 
         // Clear the authentication from server-side (in this case, Spring Security)
         SecurityContextHolder.clearContext();
 
-        return ResponseEntity.ok("You have been logged out.");
+        return ResponseEntity.ok("logOut Thành công");
     }
 
     @PutMapping("/changePass")
@@ -232,7 +238,7 @@ public class UserController {
     @GetMapping("/getPagging")
     public ResponseEntity<Map<String,Object>> getPagging(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "3") int size
+            @RequestParam(defaultValue = "2") int size
     ){
         Pageable pageable = PageRequest.of(page,size);
         Page<User> pageUser = userService.pagging(pageable);
@@ -271,15 +277,21 @@ public class UserController {
 @PutMapping("/blockUser/{userId}")
 @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<String> blockUser(@PathVariable("userId") int userId){
+    CustomUserDetail customUserDetail = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    User checkUser=userService.findByUserId(userId);
+    if (customUserDetail.getAuthorities().size()>checkUser.getListRoles().size()) {
         try {
             User users = userService.findByUserId(userId);
             users.setUserStatus(false);
             userService.saveOrUpdate(users);
             return ResponseEntity.ok("yes sir bạn đã khóa thành công");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.ok("bạn chưa khóa thành công");
         }
+    }else {
+        return ResponseEntity.ok("bạn Không đủ quyền");
+    }
     }
 
     /////////////////////////UnlockUser//////////////////////////////////////

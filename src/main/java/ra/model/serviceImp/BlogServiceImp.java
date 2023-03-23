@@ -1,6 +1,8 @@
 package ra.model.serviceImp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ra.model.entity.Blog;
@@ -50,8 +52,19 @@ public class BlogServiceImp implements BlogService {
 
 
 
+//    @Override
+//    public List<Blog> searchTitleAndSort(String direction, String blogTitle) {
+//        if(direction.equals("asc")){
+//            return blogRepository.findAll(Sort.by("blogTitle").ascending());
+//        }else {
+//            return blogRepository.findAll(Sort.by("blogTitle").descending());
+//        }
+//    }
+
     @Override
-    public List<Blog> findByUserID(int userID) {
-        return null;
+    public Page<Blog> searchTitleAndSort(String blogTitle, Pageable pageable) {
+        return blogRepository.findByBlogTitleContaining(blogTitle,pageable);
     }
+
+
 }
